@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThinkBIG Creatives</title>
+    <style>
+        html {
+            height: 100%;
+        }
+        
+        body {
+            background-image: linear-gradient(blue, magenta, orange);
+            background-position: fixed;
+            text-align: center;
+            overflow: hidden;
+            margin: 0;
+            height: 100%;
+        }
+        
+        #inner {
+            font-family: 'Yellowtail';
+            position: absolute;
+            z-index: 9999;
+            top: 30%;
+            width: 100%;
+            transform: rotate(-20deg) translate(-50px, -50%);
+        }
+        
+        @keyframes wiggle {
+            0% {
+                transform: translateX(-6px);
+            }
+        
+            100% {
+                transform: translateX(6px);
+            }
+        }
+        
+        .skyline {
+            background-image: repeat-x;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        .skyline.para {
+            opacity: 0.6;
+            bottom: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="/build/tailwind.css">
+</head>
+<body>
+    <div class="relative" id="wrap"></div>
+    <div class="flex justify-center items-center text-white text-6xl font-extrabold absolute z-50 h-screen w-screen">
+        <a class="focus:outline-none" href="https://thinkbigcreatives.com"><img class="animate-bounce w-auto h-auto px-10" src="tbclogo.png"></a>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
+    <script>
+        console.clear();
+
+        function getRndInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        };
+
+        var Skyline = (function() {
+
+            var c = document.createElement('canvas'),
+                ctx = c.getContext('2d');
+
+            var NUM_BUILDINGS = 20,
+                HEIGHT_VARIANTS = 4,
+                MAX_HEIGHT = 200,
+                WIDTH = 50,
+                SPEED = -4;
+
+            var heightSeg = Math.floor(MAX_HEIGHT / HEIGHT_VARIANTS);
+
+            c.width = NUM_BUILDINGS * WIDTH;
+            c.height = MAX_HEIGHT;
+
+            ctx.fillStyle = 'black';
+
+            for (var i = 0; i < NUM_BUILDINGS; i++) {
+                var x = i * WIDTH,
+                    h = getRndInt(1, HEIGHT_VARIANTS) * heightSeg;
+                ctx.fillRect(x, MAX_HEIGHT - h, WIDTH, h);
+            }
+
+            var skyline, paralayer, pos = 0;
+
+            function update() {
+                pos += SPEED;
+                skyline.style.backgroundPosition = pos + 'px bottom';
+                paraLayer.style.backgroundPosition = (200 + pos * 0.5) + 'px bottom';
+            }
+
+            function loop() {
+                requestAnimationFrame(loop);
+                update();
+            }
+
+            function init() {
+                skyline = document.createElement('div');
+                skyline.classList.add('skyline');
+                skyline.style.backgroundImage = 'url(' + c.toDataURL() + ')';
+                skyline.style.height = MAX_HEIGHT + 'px';
+                document.body.appendChild(skyline);
+
+                paraLayer = skyline.cloneNode();
+                paraLayer.classList.add('para');
+                document.body.appendChild(paraLayer);
+
+                loop();
+            }
+
+            return {
+                init: init
+            }
+
+        })();
+        Skyline.init();
+    </script>
+</body>
+</html>
